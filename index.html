@@ -1,83 +1,566 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Простой сайт</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ЧВК Black Head | Arma Reforger</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f141a;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+    
+    /* === Обновленный стиль header с баннером === */
+    header {
+      /* Убираем padding сверху/снизу, он будет у .header-content */
+      padding: 0 20px;
+      background-color: #0f141a; /* Основной фон (Слой 1) */
+
+      /* === Баннер (Слой 2) === */
+      background-image: url('assets/banner.jpg'); /* Укажите путь к вашему баннеру */
+      background-size: cover; /* Изображение покрывает весь header, обрезая края при необходимости */
+      background-position: center; /* Центрируем изображение */
+      background-repeat: no-repeat; /* Не повторяем */
+
+      /* Высота header с баннером */
+      min-height: 50vh; /* Минимальная высота 50% от высоты окна браузера */
+      /* Или фиксированная высота, если нужно: height: 500px; */
+
+      position: relative; /* Для позиционирования псевдоэлемента градиента */
+      display: flex;
+      align-items: center; /* Вертикальное центрирование контента */
+      justify-content: center; /* Горизонтальное центрирование контента */
+      text-align: center; /* Центрирование текста внутри */
+      border-bottom: 3px solid #0078d4;
+    }
+
+    /* === Градиентная накладка (Слой 3) === */
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      /* Градиент сверху вниз: от почти прозрачного основного цвета к более плотному */
+      background: linear-gradient(to bottom, rgba(15, 20, 26, 0.2), rgba(15, 20, 26, 0.8));
+      z-index: 1; /* Помещаем градиент над фоном, но под контентом */
+    }
+
+    /* === Контент заголовка (Слой 4) === */
+    .header-content {
+      /* position: relative не обязателен, так как header уже flex-контейнер */
+      z-index: 2; /* Помещаем контент поверх градиента */
+      padding: 60px 20px 30px 20px; /* Восстанавливаем отступы сверху/снизу внутри контента */
+      max-width: 1000px; /* Ограничиваем ширину текста, как и основной контент */
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: #0078d4;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(0, 120, 212, 0.5);
+    }
+    header p {
+      font-size: 1.2rem;
+      /* max-width убираем, так как родитель .header-content уже ограничен */
+      margin: 0 auto; /* Центрируем абзац внутри .header-content */
+      color: #eee; /* Сделаем текст чуть светлее для лучшей читаемости на фоне */
+    }
+    /* === Конец обновленных стилей header === */
+
+    /* Навигация */
+    nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 20px;
+        background: #1a1f28;
+        border-bottom: 1px solid #333;
+    }
+    nav a {
+        padding: 10px 20px;
+        background: #2a2f38;
+        color: #e0e0e0;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background 0.3s, color 0.3s;
+        font-weight: bold;
+    }
+    nav a:hover, nav a.active {
+        background: #0078d4;
+        color: white;
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-bottom: 1px solid #333;
+      display: none; /* Скрываем все секции по умолчанию */
+    }
+    section.active {
+        display: block; /* Показываем активную секцию */
+    }
+    section h2 {
+      font-size: 2rem;
+      color: #0078d4;
+      margin-bottom: 20px;
+    }
+    section p, section ul, section div.content-placeholder {
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+    /* Стиль для заглушек содержимого */
+    div.content-placeholder {
+        font-style: italic;
+        color: #888;
+    }
+
+    form {
+      background: #1a1f28;
       padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      margin-bottom: 20px; /* Отступ снизу от формы до кнопки */
     }
-    .tabs {
-      margin: 20px 0;
-    }
-    .tab-buttons {
-      display: inline-block;
-    }
-    .tab-buttons button {
-      padding: 10px 20px;
-      border: 1px solid #ccc;
-      background: #f0f0f0;
-      cursor: pointer;
-    }
-    .tab-buttons button.active {
-      background: #007bff;
-      color: white;
-    }
-    .tab-content {
-      display: none;
-      padding: 20px;
-      border: 1px solid #ddd;
-      margin-top: -1px;
-    }
-    .tab-content.active {
+    form label {
       display: block;
+      margin: 10px 0 5px;
+      color: #ccc;
+    }
+    form input, form textarea, form button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #444;
+      border-radius: 4px;
+      background: #222;
+      color: #fff;
+    }
+    form button {
+      background: #0078d4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    form button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    /* Кнопки "Сформировать Заявку" */
+    .download-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #28a745; /* Зеленый цвет */
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        margin-top: 10px; /* Отступ сверху */
+        transition: background 0.3s;
+    }
+    .download-btn:hover {
+        background: #218838;
+    }
+    .form-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap; /* Перенос кнопок на маленьких экранах */
+    }
+    .form-buttons button, .form-buttons .download-btn {
+         flex: 1; /* Кнопки будут одинаковой ширины */
+         min-width: fit-content; /* Минимальная ширина по содержимому */
+         margin-bottom: 0; /* Убираем нижний отступ у кнопок внутри контейнера */
+    }
+
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background: #1a1f28;
+        border-top: 1px solid #333;
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    /* Адаптивность для маленьких экранов */
+    @media (max-width: 768px) {
+        nav {
+            flex-direction: column;
+            align-items: center;
+        }
+        nav a {
+            width: 80%;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2rem;
+        }
+        section h2 {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* === Фиксированные кнопки в правом нижнем углу === */
+    .floating-buttons {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: flex;
+      gap: 10px;
+      flex-direction: column; /* Кнопки друг под другом */
+      z-index: 1000;
+    }
+    .floating-btn {
+      padding: 12px 20px;
+      background: #0078d4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      text-decoration: none;
+      text-align: center;
+      font-weight: bold;
+      transition: transform 0.2s, background 0.2s;
+      white-space: nowrap; /* Предотвращает перенос текста в кнопке */
+    }
+    .floating-btn:hover {
+      background: #005a9e;
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
-
-  <h1>Мой простой сайт</h1>
-
-  <!-- Две кнопки -->
-  <button onclick="alert('Кнопка 1 нажата!')">Кнопка 1</button>
-  <button onclick="alert('Кнопка 2 нажата!')">Кнопка 2</button>
-
-  <!-- Вкладки -->
-  <div class="tabs">
-    <div class="tab-buttons">
-      <button onclick="openTab('tab1')" class="active">Вкладка 1</button>
-      <button onclick="openTab('tab2')">Вкладка 2</button>
+  <!-- Обновленный header с баннером -->
+  <header id="home">
+    <div class="header-content">
+      <h1>ЧВК «Black Head»</h1>
+      <p>Наемники. Профессионалы. Без компромиссов. Arma Reforger</p>
     </div>
+  </header>
 
-    <div id="tab1" class="tab-content active">
-      <h2>Содержимое вкладки 1</h2>
-      <p>Это первая вкладка.</p>
-    </div>
+  <!-- Навигация под баннером -->
+  <nav>
+      <a href="#" class="nav-link active" data-target="about">О «Black Head»</a>
+      <a href="#" class="nav-link" data-target="briefing">Инструктаж/Курсы</a>
+      <a href="#" class="nav-link" data-target="contract">Контракты</a>
+      <a href="#" class="nav-link" data-target="apply">Заявки</a>
+      <a href="#" class="nav-link" data-target="additional">Дополнительно</a>
+  </nav>
 
-    <div id="tab2" class="tab-content">
-      <h2>Содержимое вкладки 2</h2>
-      <p>Это вторая вкладка.</p>
+  <!-- О клане -->
+  <section id="about" class="active"> <!-- Активная секция по умолчанию -->
+    <h2>О «Black Head»</h2>
+    <div class="content-placeholder" id="about-content">
+        <!-- Содержимое будет загружено сюда из about.html -->
+        Загрузка...
     </div>
+  </section>
+
+  <!-- Инструктаж / Курсы -->
+  <section id="briefing">
+    <h2>Инструктаж / Курсы</h2>
+    <div class="content-placeholder" id="briefing-content">
+        <!-- Содержимое будет загружено сюда из briefing.html -->
+        Загрузка...
+    </div>
+  </section>
+
+  <!-- Заключение контрактов -->
+  <section id="contract">
+    <h2>Заключение Контрактов</h2>
+    <p>Вы хотите нанять «Black Head» для выполнения операции? Заполните форму ниже, и наш командир свяжется с вами.</p>
+    <form id="contractForm">
+      <label for="client">Имя заказчика</label>
+      <input type="text" id="client" name="client" placeholder="Ваше имя или название отряда" required />
+      <label for="mission">Тип операции</label>
+      <input type="text" id="mission" name="mission" placeholder="Охрана, зачистка, эвакуация и т.д." required />
+      <label for="details">Описание задачи</label>
+      <textarea id="details" name="details" rows="4" placeholder="Опишите ситуацию, локацию, угрозы..." required></textarea>
+      <label for="contact">Email или Discord</label>
+      <input type="text" id="contact" name="contact" placeholder="Для связи" required />
+      
+      <div class="form-buttons">
+        <button type="submit">Отправить контракт</button>
+        <button type="button" class="download-btn" onclick="generateContractReport()">Сформировать Заявку</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Подать заявку -->
+  <section id="apply">
+    <h2>Подать Заявку в клан</h2>
+    <p>Вы хотите присоединиться к «Black Head»? Мы принимаем только лучших. Расскажите о себе.</p>
+    <form id="applyForm">
+      <label for="username">Игровое имя</label>
+      <input type="text" id="username" name="username" placeholder="Ваш ник в Arma Reforger" required />
+      <label for="experience">Опыт в тактических играх</label>
+      <textarea id="experience" name="experience" rows="3" placeholder="Arma, Squad, DayZ, другие..." required></textarea>
+      <label for="role">Роль в бою</label>
+      <input type="text" id="role" name="role" placeholder="Штурмовик, снайпер, медик, командир..." required />
+      <label for="discord">Discord / Контакт</label>
+      <input type="text" id="discord" name="discord" placeholder="Ваш Discord тег" required />
+      
+      <div class="form-buttons">
+        <button type="submit">Отправить заявку</button>
+        <button type="button" class="download-btn" onclick="generateApplicationReport()">Сформировать Заявку</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Дополнительно -->
+  <section id="additional">
+    <h2>Дополнительно</h2>
+    <div class="content-placeholder" id="additional-content">
+        <!-- Содержимое будет загружено сюда из additional.html -->
+        Загрузка...
+    </div>
+  </section>
+
+  <footer>
+      <p>&copy; 2024 ЧВК «Black Head». Все права принадлежат вымышленной организации.</p>
+  </footer>
+
+  <!-- Фиксированные кнопки -->
+  <div class="floating-buttons">
+    <a href="#contract" class="floating-btn">Контракт</a>
+    <a href="#apply" class="floating-btn">Заявки</a>
   </div>
 
   <script>
-    function openTab(tabId) {
-      // Скрываем все вкладки
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      // Убираем активный стиль у всех кнопок
-      document.querySelectorAll('.tab-buttons button').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      // Показываем выбранную вкладку
-      document.getElementById(tabId).classList.add('active');
-      // Делаем кнопку активной
-      event.target.classList.add('active');
-    }
-  </script>
+    // === ⚠️ ВСТАВЬ СВОЙ ВЕБХУК ЗДЕСЬ ===
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/123123231123123123"; // Замените на ваш реальный вебхук
 
+    // --- Навигация ---
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('data-target');
+
+            // Обновить активную ссылку в навигации
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+
+            // Показать целевую секцию и скрыть остальные
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(targetId).classList.add('active');
+
+            // Прокрутить к верху секции (опционально)
+            // document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // --- Загрузка содержимого из внешних файлов ---
+    // Обновлённая версия для выполнения скриптов из подгружаемых файлов
+    async function loadContent(sectionId, filePath) {
+        const placeholder = document.getElementById(`${sectionId}-content`);
+        if (!placeholder) return; // Защита от ошибок
+
+        try {
+            const response = await fetch(filePath);
+            if (!response.ok) throw new Error(`Ошибка загрузки ${filePath}: ${response.status}`);
+            const htmlString = await response.text();
+            
+            // Создаём временный DOM-элемент для разбора полученного HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlString;
+
+            // Извлекаем все элементы из временного контейнера
+            while (tempDiv.firstChild) {
+                placeholder.appendChild(tempDiv.firstChild);
+            }
+
+            // --- Новый код: Поиск и выполнение скриптов ---
+            const scripts = placeholder.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                // Копируем атрибуты
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                // Заменяем старый скрипт на новый, что заставляет браузер его выполнить
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+            // --- Конец нового кода ---
+
+        } catch (error) {
+            console.error("Ошибка при загрузке содержимого:", error);
+            placeholder.innerHTML = `<p style="color: red;">Не удалось загрузить содержимое. Файл: ${filePath}</p>`;
+        }
+    }
+
+    // Загрузка содержимого при инициализации страницы
+    // (Эта часть остаётся без изменений)
+    document.addEventListener('DOMContentLoaded', () => {
+        loadContent('about', 'content/about.html');
+        loadContent('briefing', 'content/briefing.html');
+        loadContent('additional', 'content/additional.html');
+        // Контракты и Заявки не требуют загрузки, так как содержимое встроено
+    });
+
+    // --- Логика форм и вебхуков (без изменений, кроме добавления console.error) ---
+    const rateLimit = (formId, delay = 60000) => {
+      const lastSent = localStorage.getItem(`lastSent_${formId}`);
+      const now = Date.now();
+      if (lastSent && now - lastSent < delay) {
+        return false;
+      }
+      localStorage.setItem(`lastSent_${formId}`, now);
+      return true;
+    };
+
+    document.getElementById("contractForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const button = e.target.querySelector("button[type='submit']");
+      if (!rateLimit("contract")) {
+        alert("Подождите 1 минуту между отправками.");
+        return;
+      }
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      const embed = {
+        title: "📝 Новый контракт",
+        fields: [
+          { name: "Заказчик", value: data.client },
+          { name: "Миссия", value: data.mission },
+          { name: "Детали", value: data.details },
+          { name: "Контакт", value: data.contact }
+        ],
+        color: 3447003
+      };
+      try {
+        button.disabled = true;
+        button.textContent = "Отправляется...";
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ embeds: [embed] })
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        alert("✅ Контракт успешно отправлен в Discord!");
+        e.target.reset();
+      } catch (err) {
+        alert("❌ Ошибка отправки. Проверь вебхук и интернет.");
+        console.error("Ошибка отправки контракта:", err); // Более подробная ошибка
+      } finally {
+        button.disabled = false;
+        button.textContent = "Отправить контракт";
+      }
+    });
+
+    document.getElementById("applyForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const button = e.target.querySelector("button[type='submit']");
+      if (!rateLimit("apply")) {
+        alert("Подождите 1 минуту между отправками.");
+        return;
+      }
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      const embed = {
+        title: "📥 Новая заявка в клан",
+        fields: [
+          { name: "Игрок", value: data.username },
+          { name: "Опыт", value: data.experience },
+          { name: "Роль", value: data.role },
+          { name: "Discord", value: data.discord }
+        ],
+        color: 16753920
+      };
+      try {
+        button.disabled = true;
+        button.textContent = "Отправляется...";
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ embeds: [embed] })
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        alert("✅ Заявка отправлена! Ожидайте проверки.");
+        e.target.reset();
+      } catch (err) {
+        alert("❌ Ошибка отправки. Проверь вебхук и интернет.");
+        console.error("Ошибка отправки заявки:", err); // Более подробная ошибка
+      } finally {
+        button.disabled = false;
+        button.textContent = "Отправить заявку";
+      }
+    });
+
+    // --- Генерация отчетов в формате TXT ---
+    function generateReport(content, filename) {
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function generateContractReport() {
+        const form = document.getElementById('contractForm');
+        if (!form) return;
+
+        const client = form.client.value || 'Не указано';
+        const mission = form.mission.value || 'Не указано';
+        const details = form.details.value || 'Не указано';
+        const contact = form.contact.value || 'Не указано';
+
+        const reportContent = `=== КОНТРАКТ ===
+Заказчик: ${client}
+Тип операции: ${mission}
+Описание задачи:
+${details}
+Контакт: ${contact}
+Дата/Время: ${new Date().toLocaleString('ru-RU')}
+`;
+
+        generateReport(reportContent, `contract_${new Date().toISOString().slice(0, 10)}.txt`);
+    }
+
+    function generateApplicationReport() {
+        const form = document.getElementById('applyForm');
+        if (!form) return;
+
+        const username = form.username.value || 'Не указано';
+        const experience = form.experience.value || 'Не указано';
+        const role = form.role.value || 'Не указано';
+        const discord = form.discord.value || 'Не указано';
+
+        const reportContent = `=== ЗАЯВКА В ЧВК "BLACK HEAD" ===
+Игровое имя: ${username}
+Опыт в тактических играх:
+${experience}
+Предпочитаемая роль: ${role}
+Discord / Контакт: ${discord}
+Дата/Время: ${new Date().toLocaleString('ru-RU')}
+`;
+
+        generateReport(reportContent, `application_${new Date().toISOString().slice(0, 10)}.txt`);
+    }
+
+  </script>
 </body>
 </html>
